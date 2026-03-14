@@ -1,0 +1,2518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Integrated Producer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f4f0e8;
+    --warm: #e8e0cc;
+    --accent: #c8401a;
+    --accent2: #1a3c8c;
+    --muted: #7a7060;
+    --line: rgba(13,13,13,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none !important;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    height: 56px;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.04);
+  }
+  .nav-links a:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 80px 48px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 9vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-name span {
+    display: block;
+    color: var(--accent);
+  }
+
+  .hero-tagline {
+    margin-top: 32px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 380px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-stats {
+    margin-top: 56px;
+    display: flex;
+    gap: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .hero-right {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    position: relative;
+  }
+
+  .hero-img-top {
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-img-top::after {
+    content: 'CAMPAIGN — PACIFICO "FIND YOUR WAY" 2025';
+    position: absolute;
+    bottom: 16px; left: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .hero-img-bottom {
+    background: var(--accent2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Placeholder graphic for hero images */
+  .placeholder-graphic {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0.3;
+  }
+
+  .pg-line { background: rgba(255,255,255,0.6); }
+  .pg-line.h { height: 1px; width: 60%; }
+  .pg-line.v { width: 1px; height: 40%; }
+
+  .film-strip {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 32px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 12px,
+      rgba(255,255,255,0.08) 12px,
+      rgba(255,255,255,0.08) 20px
+    );
+    border-left: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Diagonal accent line */
+  .diagonal-line {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 1px;
+    height: 100%;
+    background: var(--line);
+    transform: rotate(15deg) translateX(-50%);
+    transform-origin: top center;
+    pointer-events: none;
+  }
+
+  /* MARQUEE */
+  .marquee-bar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 0;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .marquee-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION LAYOUT */
+  section {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 40px 48px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+  .section-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+    letter-spacing: 0.1em;
+  }
+
+  /* CAMPAIGNS GRID */
+  .campaigns-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .campaign-card {
+    border-right: 1px solid var(--line);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .campaign-card:last-child { border-right: none; }
+  .campaign-card:hover { background: var(--warm); }
+
+  .campaign-visual {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cv-1 { background: linear-gradient(135deg, #1a1a2e 0%, #c8401a 100%); }
+  .cv-2 { background: linear-gradient(135deg, #0d2137 0%, #1a6b8a 100%); }
+  .cv-3 { background: linear-gradient(135deg, #1c1c1c 0%, #4a4a4a 100%); }
+  .cv-4 { background: linear-gradient(135deg, #2d1a0d 0%, #8b4513 100%); }
+  .cv-5 { background: linear-gradient(135deg, #0a1628 0%, #1a3c8c 100%); }
+  .cv-6 { background: linear-gradient(135deg, #1a2e1a 0%, #2d5a27 100%); }
+
+  .campaign-visual-label {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.3);
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+
+  /* Abstract visual elements in campaign cards */
+  .cv-abstract {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cv-circle {
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    position: absolute;
+  }
+  .cv-cross {
+    position: absolute;
+    width: 40px; height: 40px;
+  }
+  .cv-cross::before, .cv-cross::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.2);
+  }
+  .cv-cross::before { width: 100%; height: 1px; top: 50%; }
+  .cv-cross::after { height: 100%; width: 1px; left: 50%; }
+
+  .campaign-info {
+    padding: 20px 24px 24px;
+  }
+  .campaign-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .campaign-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .campaign-desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .campaign-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    background: transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .campaign-card:hover .tag {
+    border-color: var(--ink);
+  }
+
+  .campaign-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    border-top: 1px solid var(--line);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .campaign-arrow {
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translateX(-4px);
+  }
+  .campaign-card:hover .campaign-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* SOCIAL MEDIA SECTION */
+  .social-section {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+  }
+
+  .social-sidebar {
+    border-right: 1px solid var(--line);
+    padding: 40px 32px;
+    position: sticky;
+    top: 0;
+    height: fit-content;
+  }
+
+  .social-sidebar h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .social-sidebar p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .platform-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .platform-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+  .platform-item:hover, .platform-item.active {
+    border-color: var(--line);
+    color: var(--ink);
+    background: var(--warm);
+  }
+  .platform-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+  }
+  .platform-item.active .platform-dot { opacity: 1; }
+
+  .social-feed {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    align-content: start;
+  }
+
+  .social-post {
+    background: var(--paper);
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .sp-1 { background: linear-gradient(160deg, #c8401a, #8b1a0a); }
+  .sp-2 { background: linear-gradient(160deg, #1a3c8c, #0d2060); }
+  .sp-3 { background: linear-gradient(160deg, #1c3a1c, #0d1f0d); }
+  .sp-4 { background: linear-gradient(160deg, #3a1a4a, #1c0d28); }
+  .sp-5 { background: linear-gradient(160deg, #3a2a0d, #201505); }
+  .sp-6 { background: linear-gradient(160deg, #0d2a3a, #06141f); }
+  .sp-7 { background: linear-gradient(160deg, #2a0d1a, #150609); }
+  .sp-8 { background: linear-gradient(160deg, #1a2a0d, #0d1506); }
+  .sp-9 { background: linear-gradient(160deg, #2a2a2a, #111111); }
+
+  .social-post-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 14px;
+    transition: background 0.25s;
+  }
+  .social-post:hover .social-post-overlay {
+    background: rgba(0,0,0,0.55);
+  }
+
+  .sp-text {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.25s;
+    color: white;
+  }
+  .social-post:hover .sp-text { opacity: 1; transform: translateY(0); }
+
+  .sp-platform {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 4px;
+  }
+  .sp-caption {
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+
+  /* Post geometric decorations */
+  .sp-geo {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* SKILLS / CAPABILITIES */
+  .capabilities {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cap-item {
+    padding: 40px 32px;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .cap-item:last-child { border-right: none; }
+
+  .cap-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: var(--line);
+    line-height: 1;
+    position: absolute;
+    top: 24px; right: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .cap-icon {
+    width: 32px; height: 32px;
+    border: 1px solid var(--line);
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cap-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    margin-bottom: 12px;
+  }
+
+  .cap-desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .cap-skills {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cap-skill-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cap-skill-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .cap-bar-track {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    position: relative;
+  }
+
+  .cap-bar-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px;
+    background: var(--ink);
+    animation: barGrow 1.2s ease forwards;
+    transform-origin: left;
+  }
+
+  @keyframes barGrow {
+    from { width: 0; }
+  }
+
+  /* SELECTED WORK - BIG FEATURE */
+  .feature-work {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+  }
+
+  .feature-visual {
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid var(--line);
+  }
+
+  .feature-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 30% 70%, rgba(200, 64, 26, 0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(26, 60, 140, 0.3) 0%, transparent 50%),
+      #0d0d0d;
+  }
+
+  .feature-type-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .feature-big-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 160px;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-align: center;
+    position: absolute;
+  }
+
+  .feature-badge {
+    position: absolute;
+    bottom: 32px; left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .fb-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .fb-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: white;
+    letter-spacing: 0.05em;
+  }
+
+  .feature-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 200px;
+  }
+
+  .fm-item {
+    background: rgba(13,13,13,0.8);
+    padding: 12px 16px;
+    backdrop-filter: blur(8px);
+  }
+
+  .fm-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .fm-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+  }
+
+  .feature-content {
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .feature-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .feature-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+  }
+
+  .feature-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 440px;
+    margin-bottom: 32px;
+  }
+
+  .feature-deliverables {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+
+  .fd-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .fd-item::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--accent);
+    margin-top: 10px;
+    flex-shrink: 0;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    transition: all 0.25s;
+    align-self: flex-start;
+  }
+  .cta-btn:hover {
+    background: transparent;
+    color: var(--ink);
+  }
+  .cta-arrow { transition: transform 0.25s; }
+  .cta-btn:hover .cta-arrow { transform: translateX(4px); }
+
+  /* PROCESS */
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .process-step {
+    padding: 40px 28px;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .process-step:last-child { border-right: none; }
+  .process-step:hover { background: var(--warm); }
+
+  .ps-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .ps-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+
+  .ps-desc {
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .ps-line {
+    position: absolute;
+    top: 52px; right: 0;
+    width: 1px; height: 24px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+  .process-step:last-child .ps-line { display: none; }
+
+  /* FOOTER / CONTACT */
+  .footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 360px;
+  }
+
+  .footer-left {
+    padding: 64px 48px;
+    border-right: 1px solid var(--line);
+  }
+
+  .footer-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.92;
+    margin-bottom: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-title em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .footer-contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .fci {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .fci:hover { color: var(--ink); }
+  .fci-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 60px;
+  }
+
+  .footer-right {
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .footer-availability {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .avail-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #2ecc71;
+    animation: pulse-green 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+  }
+
+  .footer-brands {
+    margin-top: 40px;
+  }
+
+  .fb-label-small {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .brand-logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .brand-pill {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .brand-pill:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .footer-bottom {
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-bottom-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* =====================
+     MOBILE RESPONSIVE
+  ===================== */
+  @media (max-width: 768px) {
+
+    /* NAV */
+    nav {
+      padding: 0 20px;
+      height: 52px;
+    }
+    .nav-links {
+      gap: 16px;
+    }
+    .nav-links a {
+      font-size: 9px;
+    }
+    .nav-name {
+      font-size: 9px;
+    }
+
+    /* HERO */
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .hero-left {
+      padding: 100px 24px 48px;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-right {
+      grid-template-rows: 200px 160px;
+    }
+    .hero-stats {
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .stat-num { font-size: 28px; }
+
+    /* SECTION HEADERS */
+    .section-header {
+      padding: 28px 20px 20px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .section-title { font-size: 32px; }
+    .section-count { margin-left: 0; width: 100%; }
+
+    /* CAMPAIGNS GRID */
+    .campaigns-grid {
+      grid-template-columns: 1fr;
+    }
+    .campaign-card {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .campaign-card:last-child { border-bottom: none; }
+    .campaign-visual { height: 180px; }
+
+    /* FEATURE CASE STUDY */
+    .feature-work {
+      grid-template-columns: 1fr;
+    }
+    .feature-visual {
+      min-height: 280px;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .feature-content {
+      padding: 32px 24px;
+    }
+    .feature-title { font-size: 38px; }
+    .feature-metrics {
+      width: 100%;
+      position: relative;
+      bottom: auto; right: auto;
+      margin-top: 24px;
+    }
+
+    /* SOCIAL SECTION */
+    .social-section {
+      grid-template-columns: 1fr;
+    }
+    .social-sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 28px 20px;
+      position: static;
+    }
+    .platform-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .platform-item {
+      padding: 7px 12px;
+      font-size: 9px;
+    }
+    .social-feed {
+      padding: 0;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* CAPABILITIES */
+    .capabilities {
+      grid-template-columns: 1fr 1fr;
+    }
+    .cap-item {
+      padding: 28px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cap-item:nth-child(odd) { border-right: 1px solid var(--line); }
+    .cap-item:nth-child(even) { border-right: none; }
+    .cap-num { font-size: 40px; }
+
+    /* PROCESS */
+    .process-grid {
+      grid-template-columns: 1fr;
+    }
+    .process-step {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 28px 20px;
+    }
+    .ps-line { display: none; }
+
+    /* FOOTER */
+    .footer {
+      grid-template-columns: 1fr;
+    }
+    .footer-left {
+      padding: 48px 24px 40px;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .footer-title { font-size: 48px; }
+    .footer-right {
+      padding: 40px 24px 48px;
+    }
+    .footer-bottom {
+      padding: 16px 20px;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+
+    /* MARQUEE */
+    .marquee-item { font-size: 12px; padding: 0 20px; gap: 20px; }
+
+    /* GENERAL PADDING */
+    .cap-item, .process-step { padding: 28px 20px; }
+  }
+
+  /* Slightly larger phones / small tablets */
+  @media (max-width: 480px) {
+    .hero-left { padding: 90px 20px 40px; }
+    .section-header { padding: 24px 16px 16px; }
+    .campaign-info { padding: 16px 16px 18px; }
+    .campaign-meta { padding: 10px 16px; }
+    .social-feed { grid-template-columns: repeat(2, 1fr); }
+    .feature-content { padding: 28px 20px; }
+    .footer-left, .footer-right { padding-left: 20px; padding-right: 20px; }
+    .nav-links { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-name">Charles Hailey — Portfolio</span>
+  <ul class="nav-links">
+    <li><a href="#campaigns">Campaigns</a></li>
+    <li><a href="#social">Social</a></li>
+    <li><a href="#capabilities">Capabilities</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">✦ Integrated Producer — New Jersey</p>
+    <h1 class="hero-name">
+      Charles<br>
+      <span>Hailey</span>
+    </h1>
+    <p class="hero-tagline">
+      Producing integrated campaigns across film, social, digital, and brand platforms — bridging strategy, creative, and production from concept through launch.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">4+</div>
+        <div class="stat-label">Years Producing</div>
+      </div>
+      <div>
+        <div class="stat-num">45+</div>
+        <div class="stat-label">Campaigns Delivered</div>
+      </div>
+      <div>
+        <div class="stat-num">$20M</div>
+        <div class="stat-label">Budget Managed</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-top" style="background:#000;">
+      <img src="images/image_jpg_001.jpg" alt="Pacifico Shoot" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:0.92;" />
+      <span class="campaign-visual-label">On Set — Pacifico Beer</span>
+    </div>
+    <div class="hero-img-bottom" style="background:#0d0d0d;">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:rgba(255,255,255,0.06);letter-spacing:0.02em;text-align:center;line-height:1;">INTEGRATED<br>PRODUCTION</div>
+      </div>
+      <span style="position:absolute;bottom:16px;left:20px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.3);">Integrated Producer — New Jersey</span>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <!-- duplicated for seamless loop -->
+    <span class="marquee-item">Campaign Production <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Social Content Strategy <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Cross-Platform Delivery <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Brand Storytelling <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Integrated Workflows <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Vendor Management <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Post-Production Oversight <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Campaign Production <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Social Content Strategy <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Cross-Platform Delivery <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Brand Storytelling <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Integrated Workflows <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Vendor Management <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Post-Production Oversight <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- CAMPAIGNS -->
+<section id="campaigns">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Campaign Work</h2>
+    <span class="section-count">3 projects</span>
+  </div>
+  <div class="campaigns-grid reveal">
+    <!-- Card 1 -->
+    <div class="campaign-card">
+      <div class="campaign-visual cv-1" style="padding:0;overflow:hidden;">
+        <span class="campaign-visual-label" style="z-index:2;">TVC + Digital</span>
+        <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;">
+          <source src="https://res.cloudinary.com/dlky8esyb/video/upload/Conner_swkdse.mov" type="video/mp4">
+        </video>
+      </div>
+      <div class="campaign-info">
+        <div class="campaign-brand">Reebok</div>
+        <div class="campaign-title">Reebok x Conor McGregor — Zigurine 2020</div>
+        <p class="campaign-desc">Fully integrated launch across TVC, OOH, and 47 social assets. Managed $4.2M production budget and coordinated 3 international shoots.</p>
+        <div class="campaign-tags">
+          <span class="tag">TVC</span>
+          <span class="tag">OOH</span>
+          <span class="tag">Social</span>
+          <span class="tag">Global</span>
+        </div>
+      </div>
+      <div class="campaign-meta">
+        <span>2024 — Q3</span>
+        <span class="campaign-arrow">→</span>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="campaign-card">
+      <div class="campaign-visual cv-2" style="padding:0;overflow:hidden;">
+        <span class="campaign-visual-label">Social Series</span>
+        <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;">
+          <source src="https://res.cloudinary.com/dlky8esyb/video/upload/Pacifico_dql9zi.mov" type="video/mp4">
+        </video>
+      </div>
+      <div class="campaign-info">
+        <div class="campaign-brand">Pacifico</div>
+        <div class="campaign-title">Find Your Own Way</div>
+        <p class="campaign-desc">Year-round social content series feeding into the annual Wrapped moment. 120+ assets across Instagram, TikTok, and YouTube Shorts.</p>
+        <div class="campaign-tags">
+          <span class="tag">Instagram</span>
+          <span class="tag">TikTok</span>
+          <span class="tag">YT Shorts</span>
+        </div>
+      </div>
+      <div class="campaign-meta">
+        <span>2024 — Full Year</span>
+        <span class="campaign-arrow">→</span>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="campaign-card">
+      <div class="campaign-visual cv-3" style="padding:0;overflow:hidden;">
+        <span class="campaign-visual-label">INFLUENCER + PAID</span>
+        <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;">
+          <source src="https://res.cloudinary.com/dlky8esyb/video/upload/TFAL_vj6eo8.mov" type="video/mp4">
+        </video>
+      </div>
+      <div class="campaign-info">
+        <div class="campaign-brand">TFAL</div>
+        <div class="campaign-title">T-FAL TIPS</div>
+        <p class="campaign-desc">Purpose-driven campaign balancing earned and paid media. Managed 22 creator partnerships and end-to-end content production.</p>
+        <div class="campaign-tags">
+          <span class="tag">UGC</span>
+          <span class="tag">TVC</span>
+          <span class="tag">Print</span>
+          <span class="tag">OOH</span>
+        </div>
+      </div>
+      <div class="campaign-meta">
+        <span>2023 — Q4</span>
+        <span class="campaign-arrow">→</span>
+      </div>
+    </div>
+    <!-- Card 4 -->
+  </div>
+</section>
+
+<!-- FEATURE CASE STUDY -->
+<section>
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Featured Case Study</h2>
+  </div>
+  <div class="feature-work reveal">
+    <div class="feature-visual">
+      <div class="feature-bg" style="background-image: url('images/image_png_001.png'); background-size: cover; background-position: center top;"></div>
+      <div class="feature-type-overlay">
+        <div class="feature-big-text">REEBOK</div>
+      </div>
+      <div class="feature-badge">
+        <span class="fb-label">Campaign</span>
+        <span class="fb-value">ZIGURINE</span>
+        <span class="fb-label" style="margin-top:4px;">Conor McGregor — 2020</span>
+      </div>
+      <div class="feature-metrics">
+        <div class="fm-item">
+          <div class="fm-num">TVC</div>
+          <div class="fm-label">Format</div>
+        </div>
+        <div class="fm-item">
+          <div class="fm-num">Digital</div>
+          <div class="fm-label">Format</div>
+        </div>
+        <div class="fm-item">
+          <div class="fm-num">2020</div>
+          <div class="fm-label">Year</div>
+        </div>
+        <div class="fm-item">
+          <div class="fm-num" style="font-size:14px;">Deutsch NY</div>
+          <div class="fm-label">Agency</div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-content">
+      <p class="feature-eyebrow">✦ TVC + Digital Campaign</p>
+      <h3 class="feature-title">Reebok x Conor McGregor — Zigurine 2020</h3>
+      <p class="feature-body">
+        Produced the Reebok x Conor McGregor Zigurine campaign in partnership with Deutsch NY. Overseeing production from pre-pro through delivery across TVC and digital formats — coordinating talent, crew, and agency partners to execute a high-profile athlete collaboration on time and on brand.
+      </p>
+      <ul class="feature-deliverables">
+        <li class="fd-item">Hero TVC — broadcast and pre-roll edits</li>
+        <li class="fd-item">Digital assets for social and paid media</li>
+        <li class="fd-item">Agency partnership: Deutsch NY</li>
+        <li class="fd-item">Athlete talent coordination — Conor McGregor</li>
+        <li class="fd-item">Full delivery across TVC and digital platforms</li>
+      </ul>
+      <a class="cta-btn" href="#" onclick="document.getElementById('caseStudyModal').style.display='block'; document.body.style.overflow='hidden'; return false;">
+        View Full Case Study <span class="cta-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY MODAL -->
+<div id="caseStudyModal" style="
+  display:none;
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  z-index:9999;
+  background:rgba(0,0,0,0.85);
+  overflow-y:auto;
+  padding:40px 20px;
+">
+<style>
+  /* modal active state handled by JS */
+  .csm-inner {
+    max-width:860px;
+    margin:0 auto;
+    background:#f5f0e8;
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+  }
+  .csm-close {
+    position:absolute;
+    top:20px; right:24px;
+    background:none; border:none;
+    font-size:28px; cursor:pointer;
+    color:#1a1a1a; line-height:1;
+    font-family:'DM Sans', sans-serif;
+    z-index:10;
+  }
+  .csm-hero {
+    background:#1a1a1a;
+    padding:60px 48px 48px;
+    position:relative;
+  }
+  .csm-eyebrow {
+    font-family:'DM Sans', sans-serif;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:#c8a96e;
+    margin:0 0 16px;
+  }
+  .csm-brand {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:72px;
+    color:#fff;
+    line-height:1;
+    margin:0 0 8px;
+    letter-spacing:0.02em;
+  }
+  .csm-subtitle {
+    font-family:'DM Sans', sans-serif;
+    font-size:18px;
+    color:#c8a96e;
+    margin:0 0 24px;
+    font-weight:300;
+  }
+  .csm-meta-row {
+    display:flex;
+    gap:32px;
+    flex-wrap:wrap;
+  }
+  .csm-meta-item {
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;
+    color:rgba(255,255,255,0.6);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .csm-meta-item strong {
+    display:block;
+    color:#fff;
+    font-size:14px;
+    letter-spacing:0;
+    text-transform:none;
+    margin-bottom:2px;
+  }
+  .csm-body {
+    padding:48px;
+  }
+  .csm-section {
+    margin-bottom:40px;
+  }
+  .csm-section-label {
+    font-family:'DM Sans', sans-serif;
+    font-size:10px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:#c8a96e;
+    margin:0 0 12px;
+  }
+  .csm-section-title {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:32px;
+    color:#1a1a1a;
+    margin:0 0 16px;
+    letter-spacing:0.03em;
+  }
+  .csm-p {
+    font-family:'DM Sans', sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    color:#3a3a3a;
+    margin:0 0 16px;
+  }
+  .csm-divider {
+    border:none;
+    border-top:1px solid rgba(0,0,0,0.1);
+    margin:40px 0;
+  }
+  .csm-components {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-top:20px;
+  }
+  .csm-component-card {
+    background:#fff;
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:3px;
+    padding:20px 24px;
+  }
+  .csm-component-name {
+    font-family:'Bebas Neue', sans-serif;
+    font-size:18px;
+    color:#1a1a1a;
+    margin:0 0 8px;
+    letter-spacing:0.05em;
+  }
+  .csm-component-desc {
+    font-family:'DM Sans', sans-serif;
+    font-size:13px;
+    color:#666;
+    line-height:1.6;
+    margin:0;
+  }
+  .csm-role-list {
+    list-style:none;
+    padding:0; margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .csm-role-list li {
+    font-family:'DM Sans', sans-serif;
+    font-size:14px;
+    color:#3a3a3a;
+    padding-left:20px;
+    position:relative;
+    line-height:1.5;
+  }
+  .csm-role-list li::before {
+    content:'—';
+    position:absolute;
+    left:0;
+    color:#c8a96e;
+    font-weight:600;
+  }
+  .csm-credits-row {
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    background:#fff;
+    border:1px solid rgba(0,0,0,0.08);
+    border-radius:3px;
+    padding:24px 28px;
+    margin-top:16px;
+  }
+  .csm-credit-item {
+    font-family:'DM Sans', sans-serif;
+    font-size:12px;
+    color:#888;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .csm-credit-item strong {
+    display:block;
+    color:#1a1a1a;
+    font-size:14px;
+    letter-spacing:0;
+    text-transform:none;
+    margin-bottom:2px;
+  }
+  @media(max-width:600px) {
+    .csm-brand { font-size:48px; }
+    .csm-hero { padding:48px 24px 36px; }
+    .csm-body { padding:32px 24px; }
+    .csm-components { grid-template-columns:1fr; }
+    .csm-credits-row { gap:24px; }
+  }
+</style>
+
+<div class="csm-inner">
+  <button class="csm-close" onclick="document.getElementById('caseStudyModal').style.display='none'; document.body.style.overflow='';" aria-label="Close" style="color:#fff;">✕</button>
+
+  <!-- Hero -->
+  <div class="csm-hero">
+    <p class="csm-eyebrow">✦ Featured Case Study — TVC + Digital Campaign</p>
+    <div class="csm-brand">REEBOK</div>
+    <p class="csm-subtitle">x Conor McGregor — Zigurine Campaign Launch</p>
+    <div class="csm-meta-row">
+      <div class="csm-meta-item"><strong>Reebok</strong>Brand</div>
+      <div class="csm-meta-item"><strong>Deutsch New York</strong>Agency</div>
+      <div class="csm-meta-item"><strong>Conor McGregor</strong>Talent</div>
+      <div class="csm-meta-item"><strong>2020</strong>Year</div>
+      <div class="csm-meta-item"><strong>Charles Hailey</strong>Integrated Producer</div>
+    </div>
+  </div>
+
+  <!-- Video -->
+  <div style="background:#000; padding:0; display:flex; justify-content:center;">
+    <div style="width:100%; max-width:500px;">
+      <video
+        controls
+        playsinline
+        style="width:100%; display:block;"
+        poster="https://res.cloudinary.com/dlky8esyb/video/upload/v1772728733/Conner_swkdse.jpg">
+        <source src="https://res.cloudinary.com/dlky8esyb/video/upload/v1772728733/Conner_swkdse.mov" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="csm-body">
+
+    <!-- The Work -->
+    <div class="csm-section">
+      <p class="csm-section-label">The Work</p>
+      <h2 class="csm-section-title">A Campaign Built Around Intensity</h2>
+      <p class="csm-p">Launch campaign for the Reebok Zigurine training sneaker, featuring Conor McGregor. The campaign delivered a cinematic hero film supported by digital assets — designed to translate the mindset and intensity of elite athletes into a high-energy product launch.</p>
+      <p class="csm-p">Distributed across broadcast, digital, and social platforms, the work extended the brand's reach at every touchpoint from television to paid media to organic social.</p>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- The Challenge -->
+    <div class="csm-section">
+      <p class="csm-section-label">The Challenge</p>
+      <h2 class="csm-section-title">Launching Into a Competitive Category</h2>
+      <p class="csm-p">Launch a new performance sneaker in a competitive training category while authentically leveraging the influence of one of the most recognizable athletes in sports. The campaign needed to deliver a high-impact narrative that would resonate across television, digital media, and social platforms without feeling like a conventional product ad.</p>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- The Idea -->
+    <div class="csm-section">
+      <p class="csm-section-label">The Idea</p>
+      <h2 class="csm-section-title">The Moments Before the Spotlight</h2>
+      <p class="csm-p">Instead of a traditional product ad, the campaign focused on the discipline and intensity required to perform at the highest level. The Zigurine became the footwear designed for the moments before the spotlight — the preparation, the grind, the mindset. Show the relentless work that makes greatness possible.</p>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- Execution -->
+    <div class="csm-section">
+      <p class="csm-section-label">Execution</p>
+      <h2 class="csm-section-title">Production Across Every Platform</h2>
+      <p class="csm-p">Production was executed in partnership with Deutsch NY, requiring coordination across brand, agency, and athlete stakeholders. Key production components included:</p>
+      <div class="csm-components">
+        <div class="csm-component-card">
+          <p class="csm-component-name">Hero Film</p>
+          <p class="csm-component-desc">Cinematic athlete-driven commercial capturing McGregor's intensity and training mindset for broadcast television.</p>
+        </div>
+        <div class="csm-component-card">
+          <p class="csm-component-name">Multi-Platform Assets</p>
+          <p class="csm-component-desc">Broadcast cutdowns, digital pre-roll, social content, and paid media assets tailored for each platform.</p>
+        </div>
+        <div class="csm-component-card">
+          <p class="csm-component-name">Athlete Collaboration</p>
+          <p class="csm-component-desc">Coordination with Conor McGregor's management team for production schedules, approvals, and on-set logistics.</p>
+        </div>
+        <div class="csm-component-card">
+          <p class="csm-component-name">Agency Partnership</p>
+          <p class="csm-component-desc">Close collaboration with Deutsch NY to align creative vision, production process, and final deliverables.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- My Role -->
+    <div class="csm-section">
+      <p class="csm-section-label">My Role</p>
+      <h2 class="csm-section-title">Integrated Producer — Pre-Production Through Delivery</h2>
+      <p class="csm-p">As Integrated Producer, I managed the campaign from pre-production through final delivery — keeping brand, agency, and production teams aligned across every phase of the project.</p>
+      <ul class="csm-role-list">
+        <li>Production planning and scheduling across all deliverables</li>
+        <li>Talent coordination with Conor McGregor's management team</li>
+        <li>Agency collaboration and alignment with Deutsch NY</li>
+        <li>Crew and vendor management throughout production</li>
+        <li>Post-production oversight and final asset delivery</li>
+      </ul>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- Campaign Impact -->
+    <div class="csm-section">
+      <p class="csm-section-label">Campaign Impact</p>
+      <h2 class="csm-section-title">Performance at Launch</h2>
+      <p class="csm-p">The campaign supported the launch of the Reebok Zigurine training shoe with a high-energy hero film and a full suite of digital assets designed to extend reach across broadcast and social platforms. By centering the story around McGregor's relentless training mindset, the campaign reinforced Reebok's position in the performance training category.</p>
+    </div>
+
+    <hr class="csm-divider">
+
+    <!-- Credits -->
+    <div class="csm-section">
+      <p class="csm-section-label">Credits</p>
+      <div class="csm-credits-row">
+        <div class="csm-credit-item"><strong>Reebok</strong>Brand</div>
+        <div class="csm-credit-item"><strong>Deutsch New York</strong>Agency</div>
+        <div class="csm-credit-item"><strong>Conor McGregor</strong>Talent</div>
+        <div class="csm-credit-item"><strong>Charles Hailey</strong>Producer</div>
+      </div>
+    </div>
+
+  </div><!-- /csm-body -->
+</div><!-- /csm-inner -->
+</div><!-- /modal -->
+
+<!-- SOCIAL MEDIA -->
+<section id="social">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Social Content</h2>
+    <span class="section-count">Selected Works</span>
+  </div>
+  <div class="social-section reveal">
+    <div class="social-sidebar">
+      <h3>Platform Coverage</h3>
+      <p>Producing native-first content for every major platform — from 3-second bumpers to long-form documentary storytelling.</p>
+      <ul class="platform-list">
+        <li class="platform-item active">
+          <span>Instagram / Reels</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>TikTok</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>YouTube / Shorts</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>LinkedIn</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>X / Twitter</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>Pinterest</span>
+          <span class="platform-dot"></span>
+        </li>
+      </ul>
+    </div>
+    <div class="social-feed">
+      <div class="social-post" onclick="openNikeModal()" style="cursor:pointer; background:#000; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+        <img src="images/image_jpg_002.jpg" style="width:65%; max-width:140px; filter:invert(1); opacity:0.9; transition:opacity 0.2s; pointer-events:none;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">
+        <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35);">View Work ↗</div>
+        <div style="position:absolute; inset:0; border:1px solid rgba(255,255,255,0); transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,0)'"></div>
+      </div>
+      <div class="social-post" onclick="openPacificoModal()" style="cursor:pointer; background:#0a1a08; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+        <img src="images/pacifico_logo.jpg" style="width:70%; max-width:150px; opacity:0.92; transition:opacity 0.2s; pointer-events:none; border-radius:4px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.92'">
+        <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35);">View Work ↗</div>
+        <div style="position:absolute; inset:0; border:1px solid rgba(255,255,255,0); transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,0)'"></div>
+      </div>
+      <div class="social-post" onclick="openAmexModal()" style="cursor:pointer; background:#00175a; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+        <img src="images/amex_logo.png" style="width:70%; max-width:150px; opacity:0.92; transition:opacity 0.2s; pointer-events:none;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.92'">
+        <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35);">View Work ↗</div>
+        <div style="position:absolute; inset:0; border:1px solid rgba(255,255,255,0); transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.15)'" onmouseout="this.style.borderColor='rgba(255,255,255,0)'"></div>
+      </div>
+      <div class="social-post sp-2">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">TikTok</div>
+            <div class="sp-caption">Spotify Wrapped countdown. Native format, 60s. 5.1M plays.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post sp-3">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">YouTube Short</div>
+            <div class="sp-caption">Patagonia — "Repair Don't Replace." Lifestyle vertical cut.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post sp-4">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">Instagram Carousel</div>
+            <div class="sp-caption">Glossier pop-up documentation. 8-frame editorial style post.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AI CONTENT -->
+<section id="ai-content">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">AI Content</h2>
+    <span class="section-count">Selected Works</span>
+  </div>
+  <div class="social-section reveal">
+    <div class="social-sidebar">
+      <h3>AI-Powered Production</h3>
+      <p>Leveraging generative AI tools to accelerate creative production — from ideation and storyboarding to final asset delivery at scale.</p>
+      <ul class="platform-list">
+        <li class="platform-item active">
+          <span>Midjourney / DALL·E</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>Runway / Sora</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>ElevenLabs / Voice</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>Pika / Gen-3</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>Adobe Firefly</span>
+          <span class="platform-dot"></span>
+        </li>
+        <li class="platform-item">
+          <span>Custom Workflows</span>
+          <span class="platform-dot"></span>
+        </li>
+      </ul>
+    </div>
+    <div class="social-feed">
+      <div class="social-post" style="background:linear-gradient(160deg,#1a0d3a,#0d0620);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Video — Runway</div>
+            <div class="sp-caption">Nike concept reel — AI-generated product motion, zero studio cost.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post" style="background:linear-gradient(160deg,#0d1a3a,#060d20);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Image — Midjourney</div>
+            <div class="sp-caption">Pacifico seasonal campaign — 40 hero visuals generated in 48 hours.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post" style="background:linear-gradient(160deg,#1a3a1a,#0d200d);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Copy + Visual</div>
+            <div class="sp-caption">Apple social series — AI-assisted copy and image pairing for 30-post sprint.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post" style="background:linear-gradient(160deg,#3a1a0d,#200d06);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Voiceover — ElevenLabs</div>
+            <div class="sp-caption">Amex podcast ad — cloned VO talent, 6 regional versions in one afternoon.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post" style="background:linear-gradient(160deg,#2a0d2a,#150615);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Storyboard</div>
+            <div class="sp-caption">Patagonia TVC pre-viz — full 30s storyboard generated before shoot day.</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-post" style="background:linear-gradient(160deg,#1a1a0d,#0d0d06);">
+        <div class="social-post-overlay">
+          <div class="sp-text">
+            <div class="sp-platform">AI Workflow — Custom</div>
+            <div class="sp-caption">Multi-brand content pipeline — 120 assets/month with a team of 2.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section id="capabilities">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Capabilities</h2>
+  </div>
+  <div class="capabilities reveal">
+    <div class="cap-item">
+      <span class="cap-num">01</span>
+      <div class="cap-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="1" y="1" width="12" height="12"/>
+          <line x1="1" y1="7" x2="13" y2="7"/>
+        </svg>
+      </div>
+      <div class="cap-title">Campaign Production</div>
+      <p class="cap-desc">End-to-end production management from brief to final delivery — broadcast, digital, and print.</p>
+      <div class="cap-skills">
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">TVC / Film</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:95%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">OOH / Print</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:88%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Budget Mgmt</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:97%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-item">
+      <span class="cap-num">02</span>
+      <div class="cap-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="7" cy="7" r="6"/>
+          <line x1="7" y1="1" x2="7" y2="13"/>
+          <line x1="1" y1="7" x2="13" y2="7"/>
+        </svg>
+      </div>
+      <div class="cap-title">Social & Digital</div>
+      <p class="cap-desc">Native content production across all major platforms, from ideation to community rollout.</p>
+      <div class="cap-skills">
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">IG / TikTok</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:93%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">YouTube</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:86%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Paid Social</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:80%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-item">
+      <span class="cap-num">03</span>
+      <div class="cap-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1">
+          <polyline points="1,10 5,5 8,8 13,2"/>
+        </svg>
+      </div>
+      <div class="cap-title">Agency & Vendor</div>
+      <p class="cap-desc">Managing complex multi-vendor ecosystems: directors, VFX, post houses, studios, and talent.</p>
+      <div class="cap-skills">
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Bidding</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:92%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Contracts</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Post/VFX</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:88%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-item">
+      <span class="cap-num">04</span>
+      <div class="cap-icon">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1">
+          <polygon points="7,1 13,12 1,12"/>
+        </svg>
+      </div>
+      <div class="cap-title">Strategy & Ops</div>
+      <p class="cap-desc">Aligning production timelines with campaign strategy, trafficking, and stakeholder communication.</p>
+      <div class="cap-skills">
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Scheduling</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:96%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Trafficking</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="cap-skill-row">
+          <span class="cap-skill-name">Stakeholders</span>
+          <div class="cap-bar-track"><div class="cap-bar-fill" style="width:94%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section>
+  <div class="section-header reveal">
+    <span class="section-num">06</span>
+    <h2 class="section-title">How I Work</h2>
+  </div>
+  <div class="process-grid reveal">
+    <div class="process-step">
+      <div class="ps-num">01 —</div>
+      <div class="ps-title">Brief & Discovery</div>
+      <p class="ps-desc">Dig into the creative brief, brand strategy, and channel mix. Align on deliverables, KPIs, and what success looks like before a single dollar is spent.</p>
+      <div class="ps-line"></div>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">02 —</div>
+      <div class="ps-title">Scope & Budget</div>
+      <p class="ps-desc">Build the production plan: scope, timeline, vendor outreach, bidding, and a budget that leaves room for the unexpected without sacrificing the work.</p>
+      <div class="ps-line"></div>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">03 —</div>
+      <div class="ps-title">Production</div>
+      <p class="ps-desc">Manage every moving part on set and off — from shoot days and talent coordination to daily client communication and approvals.</p>
+      <div class="ps-line"></div>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">04 —</div>
+      <div class="ps-title">Post & Social</div>
+      <p class="ps-desc">Oversee editorial, color, VFX, and audio. Simultaneously manage social asset adaptation — resizing, reformatting, and captioning across every required spec.</p>
+      <div class="ps-line"></div>
+    </div>
+    <div class="process-step">
+      <div class="ps-num">05 —</div>
+      <div class="ps-title">Delivery & Analysis</div>
+      <p class="ps-desc">Traffic final assets, manage media specs, and stay close to performance post-launch. Every campaign closes with a debrief that makes the next one better.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="footer reveal">
+    <div class="footer-left">
+      <h2 class="footer-title">
+        Let's Make<br>
+        Something<br>
+        <em>Great.</em>
+      </h2>
+      <div class="footer-contact-items">
+        <a class="fci" href="/cdn-cgi/l/email-protection#7e1d161f0c121b0d14161f17121b073e19131f1712501d1113">
+          <span class="fci-type">Email</span>
+          <span><span class="__cf_email__" data-cfemail="13707b72617f7660797b727a7f766a53747e727a7f3d707c7e">[email&#160;protected]</span></span>
+        </a>
+        <a class="fci" href="https://www.linkedin.com/in/charlesjhailey">
+          <span class="fci-type">LinkedIn</span>
+          /in/charlesjhailey
+        </a>
+        <a class="fci" href="#">
+          <span class="fci-type">Location</span>
+          New Jersey — Available Remote
+        </a>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div>
+        <div class="footer-availability">
+          <span class="avail-dot"></span>
+          Available for new projects 
+        </div>
+        <div class="footer-brands" style="margin-top:40px;">
+          <div class="fb-label-small">Past & Present Clients</div>
+          <div class="brand-logos">
+            <span class="brand-pill">Reebok</span>
+            <span class="brand-pill">Pacifico</span>
+            <span class="brand-pill">Converse</span>
+            <span class="brand-pill">Amex</span>
+            <span class="brand-pill">T-FAL</span>
+            <span class="brand-pill">Pepsi</span>
+            <span class="brand-pill">Fear Of God</span>
+            <span class="brand-pill">ELF</span>
+            <span class="brand-pill">NIKE</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <a class="cta-btn" href="/cdn-cgi/l/email-protection#2a49424b58464f5940424b43464f536a4d474b434604494547" style="margin-top:32px;">
+          Get In Touch <span class="cta-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-text">© 2025 Charles Hailey — Integrated Producer</span>
+    <span class="footer-bottom-text">Built with intention.</span>
+  </div>
+</section>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Close case study modal on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('caseStudyModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Close modal on backdrop click
+  document.getElementById('caseStudyModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+
+  function checkReveals() {
+    reveals.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 80) {
+        el.classList.add('visible');
+      }
+    });
+  }
+  checkReveals();
+  window.addEventListener('scroll', checkReveals);
+</script>
+
+<!-- NIKE GALLERY MODAL -->
+<div id="nikeModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.96); overflow-y:auto;">
+  <div style="max-width:1100px; margin:0 auto; padding:48px 32px 80px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; position:sticky; top:0; background:rgba(0,0,0,0.96); padding:20px 0; z-index:10; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex; align-items:center; gap:20px;">
+        <img src="images/image_jpg_002.jpg" style="height:38px; filter:invert(1);" alt="Nike">
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:4px;">Social Content</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:#fff; letter-spacing:0.05em;">Nike — Selected Works</div>
+        </div>
+      </div>
+      <button onclick="closeNikeModal()" style="background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer; font-family:'Space Mono',monospace;">✕</button>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:3px;">
+      <div onclick="openNikeLightbox(0)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_jpg_003.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(1)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_002.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(2)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_003.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(3)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_004.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(4)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111; position:relative;">
+        <video src="https://res.cloudinary.com/dlky8esyb/video/upload/Nike_Women_t9kp8g.mov" style="width:100%; height:100%; object-fit:cover; display:block;" muted loop playsinline
+          onmouseover="this.play(); this.parentElement.querySelector('.nike-play-icon').style.opacity='0'"
+          onmouseout="this.pause(); this.currentTime=0; this.parentElement.querySelector('.nike-play-icon').style.opacity='1'">
+        </video>
+        <div class="nike-play-icon" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity 0.2s;">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid #fff; margin-left:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <div onclick="openNikeLightbox(5)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_005.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(6)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_006.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(7)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_007.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(8)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_008.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openNikeLightbox(9)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/image_png_009.png" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AMEX GALLERY MODAL -->
+<div id="amexModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.96); overflow-y:auto;">
+  <div style="max-width:1100px; margin:0 auto; padding:48px 32px 80px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; position:sticky; top:0; background:rgba(0,0,0,0.96); padding:20px 0; z-index:10; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex; align-items:center; gap:20px;">
+        <img src="images/amex_logo.png" style="height:38px;" alt="American Express">
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:4px;">Social Content</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:#fff; letter-spacing:0.05em;">American Express — Selected Works</div>
+        </div>
+      </div>
+      <button onclick="closeAmexModal()" style="background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer; font-family:'Space Mono',monospace;">✕</button>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:3px;">
+      <!-- slot 1 -->
+      <div onclick="openAmexLightbox(0)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_airline_credit.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <!-- slot 2 — VIDEO -->
+      <div onclick="openAmexLightbox(1)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111; position:relative;">
+        <video src="https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_INFLUENCER_bypgap.mov" style="width:100%; height:100%; object-fit:cover; display:block;" muted loop playsinline
+          onmouseover="this.play(); this.parentElement.querySelector('.amex-play-icon').style.opacity='0'"
+          onmouseout="this.pause(); this.currentTime=0; this.parentElement.querySelector('.amex-play-icon').style.opacity='1'">
+        </video>
+        <div class="amex-play-icon" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity 0.2s;">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid #fff; margin-left:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- slot 3 -->
+      <div onclick="openAmexLightbox(2)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_f1_event.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <!-- slot 4 -->
+      <div onclick="openAmexLightbox(3)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_hilton_credit.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <!-- slot 5 — VIDEO -->
+      <div onclick="openAmexLightbox(4)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111; position:relative;">
+        <video src="https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_Shai_vmerbw.mov" style="width:100%; height:100%; object-fit:cover; display:block;" muted loop playsinline
+          onmouseover="this.play(); this.parentElement.querySelector('.amex-play-icon2').style.opacity='0'"
+          onmouseout="this.pause(); this.currentTime=0; this.parentElement.querySelector('.amex-play-icon2').style.opacity='1'">
+        </video>
+        <div class="amex-play-icon2" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity 0.2s;">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid #fff; margin-left:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- slot 6 -->
+      <div onclick="openAmexLightbox(5)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_lounge.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <!-- slot 7 -->
+      <div onclick="openAmexLightbox(6)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_unlock_value.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <!-- slot 8 — VIDEO -->
+      <div onclick="openAmexLightbox(7)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111; position:relative;">
+        <video src="https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_F1_EVENT_rofh3z.mov" style="width:100%; height:100%; object-fit:cover; display:block;" muted loop playsinline
+          onmouseover="this.play(); this.parentElement.querySelector('.amex-play-icon3').style.opacity='0'"
+          onmouseout="this.pause(); this.currentTime=0; this.parentElement.querySelector('.amex-play-icon3').style.opacity='1'">
+        </video>
+        <div class="amex-play-icon3" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity 0.2s;">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid #fff; margin-left:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- slot 9 -->
+      <div onclick="openAmexLightbox(8)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/amex_centurion_lounge.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AMEX LIGHTBOX -->
+<div id="amexLightbox" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,0.98); align-items:center; justify-content:center;">
+  <button onclick="closeAmexLightbox()" style="position:absolute; top:24px; right:24px; background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer;">✕</button>
+  <button onclick="prevAmexImage()" style="position:absolute; left:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">‹</button>
+  <button onclick="nextAmexImage()" style="position:absolute; right:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">›</button>
+  <div id="amexLightboxMedia" style="max-height:90vh; max-width:85vw; display:flex; align-items:center; justify-content:center;"></div>
+  <div id="amexLightboxCounter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.4);"></div>
+</div>
+
+<!-- PACIFICO GALLERY MODAL -->
+<div id="pacificoModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.96); overflow-y:auto;">
+  <div style="max-width:1100px; margin:0 auto; padding:48px 32px 80px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; position:sticky; top:0; background:rgba(0,0,0,0.96); padding:20px 0; z-index:10; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex; align-items:center; gap:20px;">
+        <img src="images/pacifico_logo.jpg" style="height:38px; border-radius:3px;" alt="Pacifico">
+        <div>
+          <div style="font-family:'Space Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:4px;">Social Content</div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; color:#fff; letter-spacing:0.05em;">Pacifico — Selected Works</div>
+        </div>
+      </div>
+      <button onclick="closePacificoModal()" style="background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer; font-family:'Space Mono',monospace;">✕</button>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:3px;">
+      <div onclick="openPacificoLightbox(0)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_peacock.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(1)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_skier.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(2)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_sky_cheers.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(3)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_taco.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(4)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111; position:relative;">
+        <video src="https://res.cloudinary.com/dlky8esyb/video/upload/Pacifico_Party_ojejif.mov" style="width:100%; height:100%; object-fit:cover; display:block;" muted loop playsinline
+          onmouseover="this.play(); this.parentElement.querySelector('.play-icon').style.opacity='0'"
+          onmouseout="this.pause(); this.currentTime=0; this.parentElement.querySelector('.play-icon').style.opacity='1'">
+        </video>
+        <div class="play-icon" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; transition:opacity 0.2s;">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center;">
+            <div style="width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:15px solid #fff; margin-left:3px;"></div>
+          </div>
+        </div>
+      </div>
+      <div onclick="openPacificoLightbox(5)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_ugc.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(6)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_yellow_leaf.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(7)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_carry_bucket.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+      <div onclick="openPacificoLightbox(8)" style="cursor:pointer; overflow:hidden; aspect-ratio:3/4; background:#111;">
+        <img src="images/pacifico_ice_bucket.jpg" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s; display:block;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PACIFICO LIGHTBOX -->
+<div id="pacificoLightbox" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,0.98); align-items:center; justify-content:center;">
+  <button onclick="closePacificoLightbox()" style="position:absolute; top:24px; right:24px; background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer;">✕</button>
+  <button onclick="prevPacificoImage()" style="position:absolute; left:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">‹</button>
+  <button onclick="nextPacificoImage()" style="position:absolute; right:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">›</button>
+  <div id="pacificoLightboxMedia" style="max-height:90vh; max-width:85vw; display:flex; align-items:center; justify-content:center;"></div>
+  <div id="pacificoLightboxCounter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.4);"></div>
+</div>
+
+<!-- NIKE LIGHTBOX -->
+<div id="nikeLightbox" style="display:none; position:fixed; inset:0; z-index:10001; background:rgba(0,0,0,0.98); align-items:center; justify-content:center;">
+  <button onclick="closeNikeLightbox()" style="position:absolute; top:24px; right:24px; background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:18px; cursor:pointer;">✕</button>
+  <button onclick="prevNikeImage()" style="position:absolute; left:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">‹</button>
+  <button onclick="nextNikeImage()" style="position:absolute; right:24px; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:#fff; width:44px; height:44px; font-size:24px; cursor:pointer; line-height:1;">›</button>
+  <div id="nikeLightboxMedia" style="max-height:90vh; max-width:85vw; display:flex; align-items:center; justify-content:center;"></div>
+  <div id="nikeLightboxCounter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.4);"></div>
+</div>
+
+<script>
+  var nikeMedia = [
+    {type:'image', src:'images/image_jpg_003.jpg'},
+    {type:'image', src:'images/image_png_002.png'},
+    {type:'image', src:'images/image_png_003.png'},
+    {type:'image', src:'images/image_png_004.png'},
+    {type:'video', src:'https://res.cloudinary.com/dlky8esyb/video/upload/Nike_Women_t9kp8g.mov'},
+    {type:'image', src:'images/image_png_005.png'},
+    {type:'image', src:'images/image_png_006.png'},
+    {type:'image', src:'images/image_png_007.png'},
+    {type:'image', src:'images/image_png_008.png'},
+    {type:'image', src:'images/image_png_009.png'}
+  ];
+  var nikeLightboxIndex = 0;
+
+  function openNikeModal() {
+    document.getElementById('nikeModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNikeModal() {
+    document.getElementById('nikeModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  function openNikeLightbox(idx) {
+    nikeLightboxIndex = idx;
+    document.getElementById('nikeLightbox').style.display = 'flex';
+    renderNikeLightbox();
+  }
+  function renderNikeLightbox() {
+    var item = nikeMedia[nikeLightboxIndex];
+    var container = document.getElementById('nikeLightboxMedia');
+    if (item.type === 'video') {
+      container.innerHTML = '<video src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;" controls autoplay muted playsinline></video>';
+    } else {
+      container.innerHTML = '<img src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;">';
+    }
+    document.getElementById('nikeLightboxCounter').textContent = (nikeLightboxIndex+1) + ' / ' + nikeMedia.length;
+  }
+  function closeNikeLightbox() {
+    document.getElementById('nikeLightbox').style.display = 'none';
+    document.getElementById('nikeLightboxMedia').innerHTML = '';
+  }
+  function prevNikeImage() {
+    nikeLightboxIndex = (nikeLightboxIndex - 1 + nikeMedia.length) % nikeMedia.length;
+    renderNikeLightbox();
+  }
+  function nextNikeImage() {
+    nikeLightboxIndex = (nikeLightboxIndex + 1) % nikeMedia.length;
+    renderNikeLightbox();
+  }
+  document.getElementById('nikeLightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeNikeLightbox();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (document.getElementById('nikeLightbox').style.display === 'flex') {
+      if (e.key === 'ArrowRight') nextNikeImage();
+      if (e.key === 'ArrowLeft') prevNikeImage();
+      if (e.key === 'Escape') closeNikeLightbox();
+    }
+    if (document.getElementById('nikeModal').style.display === 'block' && e.key === 'Escape') closeNikeModal();
+    if (document.getElementById('amexLightbox').style.display === 'flex') {
+      if (e.key === 'ArrowRight') nextAmexImage();
+      if (e.key === 'ArrowLeft') prevAmexImage();
+      if (e.key === 'Escape') closeAmexLightbox();
+    }
+    if (document.getElementById('amexModal').style.display === 'block' && e.key === 'Escape') closeAmexModal();
+    if (document.getElementById('pacificoLightbox').style.display === 'flex') {
+      if (e.key === 'ArrowRight') nextPacificoImage();
+      if (e.key === 'ArrowLeft') prevPacificoImage();
+      if (e.key === 'Escape') closePacificoLightbox();
+    }
+    if (document.getElementById('pacificoModal').style.display === 'block' && e.key === 'Escape') closePacificoModal();
+  });
+
+  // Amex
+  var amexMedia = [
+    {type:'image', src:'images/amex_airline_credit.jpg'},
+    {type:'video', src:'https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_INFLUENCER_bypgap.mov'},
+    {type:'image', src:'images/amex_f1_event.jpg'},
+    {type:'image', src:'images/amex_hilton_credit.jpg'},
+    {type:'video', src:'https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_Shai_vmerbw.mov'},
+    {type:'image', src:'images/amex_lounge.jpg'},
+    {type:'image', src:'images/amex_unlock_value.jpg'},
+    {type:'video', src:'https://res.cloudinary.com/dlky8esyb/video/upload/AMEX_F1_EVENT_rofh3z.mov'},
+    {type:'image', src:'images/amex_centurion_lounge.jpg'}
+  ];
+  var amexLightboxIndex = 0;
+
+  function openAmexModal() {
+    document.getElementById('amexModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAmexModal() {
+    document.getElementById('amexModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  function openAmexLightbox(idx) {
+    amexLightboxIndex = idx;
+    document.getElementById('amexLightbox').style.display = 'flex';
+    renderAmexLightbox();
+  }
+  function renderAmexLightbox() {
+    var item = amexMedia[amexLightboxIndex];
+    var container = document.getElementById('amexLightboxMedia');
+    if (item.type === 'video') {
+      container.innerHTML = '<video src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;" controls autoplay muted playsinline></video>';
+    } else {
+      container.innerHTML = '<img src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;">';
+    }
+    document.getElementById('amexLightboxCounter').textContent = (amexLightboxIndex+1) + ' / ' + amexMedia.length;
+  }
+  function closeAmexLightbox() {
+    document.getElementById('amexLightbox').style.display = 'none';
+    document.getElementById('amexLightboxMedia').innerHTML = '';
+  }
+  function prevAmexImage() {
+    amexLightboxIndex = (amexLightboxIndex - 1 + amexMedia.length) % amexMedia.length;
+    renderAmexLightbox();
+  }
+  function nextAmexImage() {
+    amexLightboxIndex = (amexLightboxIndex + 1) % amexMedia.length;
+    renderAmexLightbox();
+  }
+  document.getElementById('amexLightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeAmexLightbox();
+  });
+
+  // Pacifico
+  var pacificoMedia = [
+    {type:'image', src:'images/pacifico_peacock.jpg'},
+    {type:'image', src:'images/pacifico_skier.jpg'},
+    {type:'image', src:'images/pacifico_sky_cheers.jpg'},
+    {type:'image', src:'images/pacifico_taco.jpg'},
+    {type:'video', src:'https://res.cloudinary.com/dlky8esyb/video/upload/Pacifico_Party_ojejif.mov'},
+    {type:'image', src:'images/pacifico_ugc.jpg'},
+    {type:'image', src:'images/pacifico_yellow_leaf.jpg'},
+    {type:'image', src:'images/pacifico_carry_bucket.jpg'},
+    {type:'image', src:'images/pacifico_ice_bucket.jpg'}
+  ];
+  var pacificoLightboxIndex = 0;
+
+  function openPacificoModal() {
+    document.getElementById('pacificoModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+  function closePacificoModal() {
+    document.getElementById('pacificoModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  function openPacificoLightbox(idx) {
+    pacificoLightboxIndex = idx;
+    var lb = document.getElementById('pacificoLightbox');
+    lb.style.display = 'flex';
+    renderPacificoLightbox();
+  }
+  function renderPacificoLightbox() {
+    var item = pacificoMedia[pacificoLightboxIndex];
+    var container = document.getElementById('pacificoLightboxMedia');
+    if (item.type === 'video') {
+      container.innerHTML = '<video src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;" controls autoplay muted playsinline></video>';
+    } else {
+      container.innerHTML = '<img src="' + item.src + '" style="max-height:90vh; max-width:85vw; object-fit:contain;">';
+    }
+    document.getElementById('pacificoLightboxCounter').textContent = (pacificoLightboxIndex+1) + ' / ' + pacificoMedia.length;
+  }
+  function closePacificoLightbox() {
+    document.getElementById('pacificoLightbox').style.display = 'none';
+    document.getElementById('pacificoLightboxMedia').innerHTML = '';
+  }
+  function prevPacificoImage() {
+    pacificoLightboxIndex = (pacificoLightboxIndex - 1 + pacificoMedia.length) % pacificoMedia.length;
+    renderPacificoLightbox();
+  }
+  function nextP
