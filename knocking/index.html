@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knocking — Social Media Strategy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f3ef;
+    --off-white: #ede9e2;
+    --orange: #E8470A;
+    --orange-light: #f5611f;
+    --stone: #c4bfb6;
+    --mid: #6b6660;
+    --navy: #1a1f2e;
+    --green: #2d6a4f;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .nav-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  .nav-brand span { color: var(--orange); }
+
+  .nav-slides {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .slide-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--mid);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    border: none;
+  }
+
+  .slide-dot.active { background: var(--orange); transform: scale(1.4); }
+
+  /* SLIDES */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .slide-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* SLIDE NUMBERS */
+  .slide-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .slide-number::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--orange);
+    opacity: 0.5;
+  }
+
+  /* TYPOGRAPHY */
+  h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  p, li {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--stone);
+  }
+
+  .accent { color: var(--orange); }
+  .dim { color: var(--mid); }
+
+  /* HERO SLIDE */
+  #slide-1 {
+    background: var(--black);
+    min-height: 100vh;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0; right: 0;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(232,71,10,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(232,71,10,0.15), transparent);
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.88;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-sub {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--stone);
+    max-width: 480px;
+    line-height: 1.55;
+    margin-bottom: 3rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 3rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+
+  .hero-meta-item span {
+    display: block;
+    color: var(--stone);
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  /* COMPANY OVERVIEW */
+  #slide-2 {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  #slide-2 h2, #slide-2 h3 { color: var(--black); }
+  #slide-2 p, #slide-2 li { color: #4a4540; }
+  #slide-2 .slide-number { color: var(--orange); }
+  #slide-2 .slide-number::after { background: var(--orange); }
+  #slide-2 .dim { color: #9a9590; }
+
+  .company-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+
+  .company-stat {
+    border-left: 3px solid var(--orange);
+    padding-left: 1.5rem;
+  }
+
+  .stat-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--orange);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-top: 0.25rem;
+  }
+
+  .stat-desc {
+    font-size: 0.95rem;
+    color: #6a6560;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+
+  /* THE PROBLEM */
+  #slide-3 {
+    background: var(--navy);
+  }
+
+  .problem-quote {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.1;
+    color: var(--white);
+    border-left: 4px solid var(--orange);
+    padding-left: 2rem;
+    margin: 3rem 0;
+    max-width: 800px;
+  }
+
+  .problem-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .problem-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+
+  .problem-item-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--orange);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+  }
+
+  .problem-item p {
+    font-size: 0.95rem;
+    color: var(--stone);
+  }
+
+  /* VOICE & POSITIONING */
+  #slide-4 {
+    background: var(--black);
+  }
+
+  .voice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .voice-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 2rem;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+  }
+
+  .voice-card:hover {
+    border-color: rgba(232,71,10,0.3);
+  }
+
+  .voice-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+
+  .voice-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--white);
+  }
+
+  /* CONTENT PILLARS */
+  #slide-5 {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  #slide-5 h2 { color: var(--black); }
+  #slide-5 .slide-number { color: var(--orange); }
+  #slide-5 .slide-number::after { background: var(--orange); }
+
+  #slide-4 h2, #slide-4 .slide-number { color: var(--black); }
+  #slide-4 .slide-number::after { background: var(--orange); }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    margin-top: 3rem;
+    background: #d0ccc6;
+    border: 1px solid #d0ccc6;
+  }
+
+  .pillar {
+    background: var(--off-white);
+    padding: 2.5rem 1.75rem;
+    transition: background 0.2s;
+  }
+
+  .pillar:hover { background: var(--white); }
+
+  .pillar-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .pillar h3 {
+    font-size: 1.6rem;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  }
+
+  .pillar p {
+    font-size: 0.9rem;
+    color: #6a6560;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .pillar-examples {
+    list-style: none;
+  }
+
+  .pillar-examples li {
+    font-size: 0.82rem;
+    color: var(--mid);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .pillar-examples li::before {
+    content: '→';
+    color: var(--orange);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* PLATFORM STRATEGY */
+  #slide-6 {
+    background: var(--black);
+  }
+
+  .platform-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .platform-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    border: 1px solid #ccc8c2;
+    border-radius: 4px;
+    align-items: start;
+  }
+
+  .platform-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .platform-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+
+  .platform-detail-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .platform-detail-text {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    line-height: 1.55;
+  }
+
+  .tiktok-color { color: #69C9D0; }
+  .ig-color { color: #C13584; }
+  .li-color { color: #0077B5; }
+
+  /* CONTENT CAPTURE — unused but keeping for future */
+  .slide-navy {
+    background: var(--navy);
+  }
+
+  /* CULTURE SLIDE */
+  .slide-culture {
+    background: var(--black);
+  }
+
+  .culture-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .culture-card {
+    padding: 1.75rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .culture-card:hover {
+    border-color: rgba(232,71,10,0.3);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .culture-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  }
+
+  .culture-card h3 {
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .culture-card p {
+    font-size: 0.88rem;
+    color: var(--stone);
+    line-height: 1.6;
+  }
+
+  /* FIRST WEEK — light slide */
+  .slide-light {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  .slide-light h2, .slide-light .slide-number { color: var(--black); }
+  .slide-light .slide-number::after { background: var(--orange); }
+
+  .engine-flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 3rem;
+    position: relative;
+  }
+
+  .engine-step {
+    padding: 2.5rem 2rem;
+    border: 1px solid #d0ccc6;
+    margin-left: -1px;
+    position: relative;
+    background: var(--off-white);
+  }
+
+  .engine-step-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 5rem;
+    line-height: 0.9;
+    color: rgba(232,71,10,0.12);
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    letter-spacing: -0.05em;
+  }
+
+  .engine-step h3 {
+    font-size: 1.4rem;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .engine-step p {
+    font-size: 0.88rem;
+    color: #6a6560;
+    line-height: 1.55;
+    position: relative;
+    z-index: 1;
+  }
+
+  .engine-step ul {
+    list-style: none;
+    margin-top: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .engine-step ul li {
+    font-size: 0.82rem;
+    color: #8a8580;
+    padding: 0.3rem 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+
+  .engine-step ul li::before {
+    content: '—';
+    color: var(--orange);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  /* COMMUNITY */
+  #slide-9 {
+    background: var(--black);
+  }
+
+  .community-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .community-card {
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 4px;
+  }
+
+  .community-card h3 {
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+  }
+
+  .community-card p {
+    font-size: 0.9rem;
+    color: var(--stone);
+    line-height: 1.55;
+  }
+
+  /* SAMPLE CONTENT */
+  #slide-10 {
+    background: var(--navy);
+  }
+
+  .content-ideas {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .content-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .content-card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content-platform-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    background: rgba(232,71,10,0.15);
+    color: var(--orange);
+  }
+
+  .content-pillar-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+
+  .content-card-body {
+    padding: 1.5rem;
+  }
+
+  .content-card-body h3 {
+    font-size: 1.2rem;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 600;
+  }
+
+  .content-card-body p {
+    font-size: 0.88rem;
+    color: var(--stone);
+    line-height: 1.55;
+  }
+
+  /* FIRST WEEK */
+  #slide-11 {
+    background: var(--off-white);
+    color: var(--black);
+  }
+
+  /* week timeline handled by .slide-light class */
+
+  .week-timeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    margin-top: 3rem;
+    background: #d0ccc6;
+    border: 1px solid #d0ccc6;
+  }
+
+  .day-block {
+    background: var(--off-white);
+    padding: 2rem 1.5rem;
+    margin: 1px;
+  }
+
+  .day-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+  }
+
+  .day-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    color: var(--black);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .day-tasks {
+    list-style: none;
+  }
+
+  .day-tasks li {
+    font-size: 0.82rem;
+    color: #6a6560;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #ddd;
+    line-height: 1.45;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .day-tasks li::before {
+    content: '·';
+    color: var(--orange);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* CLOSING */
+  #slide-12 {
+    background: var(--black);
+    text-align: center;
+  }
+
+  .close-pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 2rem;
+  }
+
+  .close-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.88;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .close-sub {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--stone);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+
+  .signature-block {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem 3rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+  }
+
+  .sig-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+
+  .sig-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  /* PRINT / PDF hint */
+  @media print {
+    .slide { page-break-inside: avoid; }
+    nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Charles Hailey <span>×</span> Knocking</div>
+  <div class="nav-slides" id="navDots"></div>
+</nav>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide" id="slide-1">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-line"></div>
+  <div class="slide-inner">
+    <div class="hero-eyebrow">Social Media Strategy — 2026</div>
+    <div class="hero-title">
+      Building<br>Knocking's<br><span class="accent">Voice.</span>
+    </div>
+    <p class="hero-sub">Knocking is already winning. This is how the world finds out.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        Prepared by<span>Charles Hailey</span>
+      </div>
+      <div class="hero-meta-item">
+        Role<span>Social Media Manager & Producer</span>
+      </div>
+      <div class="hero-meta-item">
+        Platforms<span>TikTok · Instagram · LinkedIn</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 2: WHO IS KNOCKING -->
+<section class="slide" id="slide-2">
+  <div class="slide-inner">
+    <div class="slide-number">01 — Who Is Knocking</div>
+    <h2>Content.<br>Commerce.<br><span class="accent">At Scale.</span></h2>
+    <div class="company-grid">
+      <div>
+        <div class="company-stat" style="margin-bottom:2rem;">
+          <div class="stat-number">$6B+</div>
+          <div class="stat-label">Online Transactions Facilitated</div>
+          <div class="stat-desc">CBSdeals, GMAdeals, Local Steals & Deals, Inside Edition's Inside Shop — Knocking powers the commerce behind the content people already watch.</div>
+        </div>
+        <div class="company-stat" style="margin-bottom:2rem;">
+          <div class="stat-number">#161</div>
+          <div class="stat-label">Inc. 5000 — Fastest Growing Companies</div>
+          <div class="stat-desc">#3 in U.S. Retail. #1 in Connecticut. Backed by Apollo Global. This isn't a startup — it's a category leader with a proven model.</div>
+        </div>
+        <div class="company-stat">
+          <div class="stat-number">10M+</div>
+          <div class="stat-label">Weekly Viewers via Media Partners</div>
+          <div class="stat-desc">CBS, Disney ABC, NBC, Univision, iHeartMedia, Inside Edition, Sinclair, Cox Media Group — Knocking is embedded in the media audiences already trust.</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:1.1rem; font-weight:500; color:#2a2520; margin-bottom:1.25rem;">Knocking finds brands consumers love — and puts them in the media they already watch. Not ads. Actual storytelling that moves product.</p>
+        <p style="font-size:0.95rem; color:#6a6560; margin-bottom:1.25rem;">The model is simple and powerful: curate winning brands, produce premium short-form content around their story, distribute through trusted media partners, and close the loop with seamless e-commerce. Every piece is connected.</p>
+        <div style="margin-top:2rem; padding:1.25rem 1.5rem; background:#e8e4dc; border-left:3px solid var(--orange);">
+          <p style="font-size:0.9rem; font-weight:600; color:#2a2520; font-style:italic;">"Knocking is a little tiny baby Amazon for media companies."</p>
+          <p style="font-size:0.78rem; color:#8a8580; margin-top:0.5rem;">— Brian Meehan, Co-Founder & COO</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: THE OPPORTUNITY -->
+<section class="slide" id="slide-3">
+  <div class="slide-inner">
+    <div class="slide-number">02 — The Opportunity</div>
+    <h2>The Story<br>Is Ready.<br>Time to<br><span class="accent">Tell It.</span></h2>
+    <div class="problem-quote">
+      Knocking has a track record, a model that works, and a roster of partners that speaks for itself. Social is how the world finds out.
+    </div>
+    <ul class="problem-list">
+      <li class="problem-item">
+        <div class="problem-item-num">001</div>
+        <p>Brands and founders are actively searching for the right commerce partner. A strong social presence puts Knocking in that conversation before a single call is made.</p>
+      </li>
+      <li class="problem-item">
+        <div class="problem-item-num">002</div>
+        <p>Knocking's model is best understood by seeing it in action. Social is a 24/7 product demo — showing how the brand partnership, production, and commerce loop actually works.</p>
+      </li>
+      <li class="problem-item">
+        <div class="problem-item-num">003</div>
+        <p>The team, the segment days, the partner wins — this is compelling content waiting to be activated. The raw material is already here.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 4: CONTENT PILLARS -->
+<section class="slide" id="slide-4">
+  <div class="slide-inner">
+    <div class="slide-number">03 — Content System</div>
+    <h2>Four Pillars.<br><span class="accent">One</span> Story.</h2>
+    <p style="color:#6a6560; max-width:580px; margin-top:0.75rem;">Every post maps to a pillar. Every pillar builds the brand. Nothing random — everything intentional.</p>
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-num">Pillar 01</div>
+        <h3>Insight &<br>Thought<br>Leadership</h3>
+        <p>Knocking has a front-row seat to how commerce moves. Share that POV and own the conversation about content-commerce and retail media.</p>
+        <ul class="pillar-examples">
+          <li>What makes a brand "sellable" on air</li>
+          <li>How media placements drive DTC revenue</li>
+          <li>COO/leadership hot takes on commerce trends</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">Pillar 02</div>
+        <h3>Culture &<br>Community</h3>
+        <p>Knocking works with founders, celebrities, and everyday brands. Celebrate the people and the moments — make it feel human, because it is.</p>
+        <ul class="pillar-examples">
+          <li>Brand founder spotlights</li>
+          <li>Segment launch reactions and recaps</li>
+          <li>Team culture and behind-the-scenes</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">Pillar 03</div>
+        <h3>Partner<br>Showcase</h3>
+        <p>The roster is the proof. Show the breadth of media partners and brand wins — give future partners the social proof they need to reach out.</p>
+        <ul class="pillar-examples">
+          <li>Media partner announcements</li>
+          <li>Segment highlights and results</li>
+          <li>New platform and show launches</li>
+        </ul>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">Pillar 04</div>
+        <h3>Behind the<br>Work</h3>
+        <p>The production is the content. Show the team, the craft, and the tools — this builds trust with future partners, talent, and audiences.</p>
+        <ul class="pillar-examples">
+          <li>Segment day POV content</li>
+          <li>CES and trade show floor coverage</li>
+          <li>Mission Control data moments</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: PLATFORM STRATEGY -->
+<section class="slide" id="slide-5">
+  <div class="slide-inner">
+    <div class="slide-number">04 — Platform Strategy</div>
+    <h2>Right Platform.<br>Right <span class="accent">Purpose.</span></h2>
+    <p style="color:#4a4540; max-width:600px; margin-top:0.75rem;">Each platform gets a distinct job. Nothing copy-pasted across the feed.</p>
+    <div class="platform-stack">
+
+      <div class="platform-row" style="border-color:rgba(105,201,208,0.2);">
+        <div>
+          <div class="platform-name tiktok-color">TikTok</div>
+          <div class="platform-role" style="color:#69C9D0;">Discovery Engine</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Job</div>
+          <div class="platform-detail-text">Reach brands, founders, and culture-forward audiences who haven't heard of Knocking yet. Top-of-funnel. Native, fast, personality-driven.</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Content</div>
+          <div class="platform-detail-text">Segment day POV · "You've bought from us without knowing it" · Behind-the-scenes of production · Trend-native commerce takes</div>
+        </div>
+      </div>
+
+      <div class="platform-row" style="border-color:rgba(193,53,132,0.2);">
+        <div>
+          <div class="platform-name ig-color">Instagram</div>
+          <div class="platform-role" style="color:#C13584;">Brand Identity Hub</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Job</div>
+          <div class="platform-detail-text">Build the visual identity and culture of the brand. Where people go to understand who Knocking is and whether they want to work with them.</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Content</div>
+          <div class="platform-detail-text">Produced Reels from segment days · Partner spotlights · Team culture posts · Carousel explainers on how the model works</div>
+        </div>
+      </div>
+
+      <div class="platform-row" style="border-color:rgba(0,119,181,0.2);">
+        <div>
+          <div class="platform-name li-color">LinkedIn</div>
+          <div class="platform-role" style="color:#0077B5;">Authority Platform</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Job</div>
+          <div class="platform-detail-text">Own the content-commerce narrative with media buyers, brand partners, and decision-makers. Position Knocking as the category expert.</div>
+        </div>
+        <div>
+          <div class="platform-detail-label">Content</div>
+          <div class="platform-detail-text">COO thought leadership · Data-driven insight posts · Partner case studies · Inc. 5000 and award moments · Segment launch announcements</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: SAMPLE CONTENT -->
+<section class="slide" id="slide-6">
+  <div class="slide-inner">
+    <div class="slide-number">05 — Content in Action</div>
+    <h2>What It<br>Looks <span class="accent">Like.</span></h2>
+    <p style="color:var(--stone); max-width:600px; margin-top:0.75rem;">Three specific pieces I'd produce in week one — given access and a shoot day.</p>
+    <div class="content-ideas" style="grid-template-columns:1fr 1fr 1fr;">
+
+      <div class="content-card">
+        <div class="content-card-header">
+          <span class="content-platform-tag">TikTok / Reel</span>
+          <span class="content-pillar-tag">Behind the Work</span>
+        </div>
+        <div class="content-card-body">
+          <h3>"You've bought from us. You just didn't know it."</h3>
+          <p>Quick-cut montage of CBS Deals, GMA Deals, Local Steals & Deals, Inside Edition — with someone from the team on camera. Positions Knocking as the hidden engine behind familiar moments people already trust. High shareability. Hook-first.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-card-header">
+          <span class="content-platform-tag">TikTok</span>
+          <span class="content-pillar-tag">Behind the Work</span>
+        </div>
+        <div class="content-card-body">
+          <h3>Segment Day POV</h3>
+          <p>"POV: You work at the company that powers CBS Deals — and today is a shoot day." Walk-through of prep, production floor, and the moment a segment goes live. Raw and authentic. Exactly what TikTok rewards — shows the craft behind the commerce.</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-card-header">
+          <span class="content-platform-tag">LinkedIn</span>
+          <span class="content-pillar-tag">Thought Leadership</span>
+        </div>
+        <div class="content-card-body">
+          <h3>The Data Behind the Deal</h3>
+          <p>Post tied to Mission Control data — a brand goes on air, and traffic spikes in real time. Copy: "This is what we show brands when they ask 'did it work?'" Authority-building. Speaks directly to brand partners and media buyers. Converts attention into inbound.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: FIRST WEEK -->
+<section class="slide slide-light" id="slide-7">
+  <div class="slide-inner">
+    <div class="slide-number" style="color:var(--orange);">06 — First Week</div>
+    <h2 style="color:var(--black);">Day One.<br><span class="accent">Not Day Ninety.</span></h2>
+    <p style="color:#4a4540; max-width:600px; margin-top:0.75rem;">No wasted ramp time. The first week ends with content live.</p>
+    <div class="week-timeline">
+      <div class="day-block">
+        <div class="day-label">Mon</div>
+        <div class="day-title">Listen &<br>Learn</div>
+        <ul class="day-tasks">
+          <li>Full audit of existing social channels</li>
+          <li>Review all media partner relationships</li>
+          <li>1:1 with COO — goals and quick wins</li>
+        </ul>
+      </div>
+      <div class="day-block">
+        <div class="day-label">Tue</div>
+        <div class="day-title">Understand<br>The Work</div>
+        <ul class="day-tasks">
+          <li>Watch every available Knocking segment</li>
+          <li>Interview 2–3 team members on the brand</li>
+          <li>Identify what makes Knocking different — in their own words</li>
+        </ul>
+      </div>
+      <div class="day-block">
+        <div class="day-label">Wed</div>
+        <div class="day-title">Build the<br>System</div>
+        <ul class="day-tasks">
+          <li>Draft brand voice and content pillars doc</li>
+          <li>Map 30-day content calendar</li>
+          <li>Identify 3 ready-to-post pieces already available</li>
+        </ul>
+      </div>
+      <div class="day-block">
+        <div class="day-label">Thu</div>
+        <div class="day-title">Capture<br>Day</div>
+        <ul class="day-tasks">
+          <li>Office walkthrough with Brian — tour each area on camera, let him tell the story of how the space works</li>
+          <li>Walk + talk interview: where ideas become segments, where brands get made</li>
+          <li>B-roll: production floor, Mission Control screens, team at work</li>
+          <li>Capture the energy — this is the vibe people need to see</li>
+        </ul>
+      </div>
+      <div class="day-block">
+        <div class="day-label">Fri</div>
+        <div class="day-title">First Post.<br>Live.</div>
+        <ul class="day-tasks">
+          <li>Edit and post first piece to LinkedIn</li>
+          <li>Present 30-day calendar to leadership</li>
+          <li>Lock Week 2 shoot schedule</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 8: CLOSE -->
+<section class="slide" id="slide-8">
+  <div class="slide-inner" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+    <div class="close-pre">The Strategy Is Here. The Work Starts Now.</div>
+    <div class="close-title">
+      Let's Build<br>Something<br><span class="accent">People</span><br>Follow.
+    </div>
+    <p class="close-sub">Knocking has the track record, the partners, and the story. I'm here to make sure the right people hear it.</p>
+    <div class="signature-block">
+      <div class="sig-name">Charles Hailey</div>
+      <div class="sig-role">Creative & Integrated Producer</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const navDots = document.getElementById('navDots');
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'slide-dot';
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    });
+    navDots.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll('.slide-dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = [...slides].indexOf(entry.target);
+        dots.forEach(d => d.classList.remove('active'));
+        if (dots[idx]) dots[idx].classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
